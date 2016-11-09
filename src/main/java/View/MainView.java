@@ -5,8 +5,9 @@
  */
 package View;
 
+import Model.Email;
+import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
 import com.google.api.services.gmail.Gmail;
-import com.google.api.services.gmail.model.Label;
 import com.google.api.services.gmail.model.Message;
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -14,15 +15,18 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
-import javax.swing.DefaultListModel;
+import java.util.Properties;
+import javax.mail.MessagingException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import static main.main.getGmailService;
+import javax.mail.Session;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 /**
  *
@@ -30,41 +34,54 @@ import static main.main.getGmailService;
  */
 public class MainView {
     
-    private final JFrame frame = new JFrame();
-    private final Container container = frame.getContentPane();
-    private JScrollPane listPane;
-    private final Container topPane = new JPanel();
+    private JFrame frame;
+    private final Container container;
+    private final JScrollPane listPane;
+    private final Container topPane;
+    private final TableView tabela;
     
-    private static void populando(List<Message> emails, DefaultListModel model, Gmail service) throws IOException {
-        
+    public void populate(Gmail service, List<Message> messages) throws IOException, MessagingException {
         int i = 0;
         
-        for (Message email : emails) {
+        for (Message m : messages) {
             
-            String messageId = email.getId();
+            String messageId = m.getId();
             
-            Message message = service.users().messages().get("me", messageId).execute();
+            Message message = service.users().messages().get("me", messageId).setFormat("raw").execute();
 
-            model.add(i, message.getSnippet());
+            Base64 base64Url = new Base64(true);
+            byte[] emailBytes = base64Url.decodeBase64(message.getRaw());
+            
+            Properties props = new Properties();
+            Session session = Session.getDefaultInstance(props, null);
+            
+            MimeMessage mime = new MimeMessage(session, new ByteArrayInputStream(emailBytes));
+            
+            Email obj = new Email(mime, message.getSnippet());
+            
+            this.tabela.setObject(obj);
             
             i++;
         }
         
     }
  
-    public MainView(List<Message> emails, Gmail service) throws IOException {
+    public MainView() throws IOException {
+        this.frame = new JFrame();
+        this.topPane = new JPanel();
+        this.container = frame.getContentPane();
         
         frame.setTitle("Lista de Emails");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         container.setLayout(new BorderLayout(20,20));
         
-        DefaultListModel model = new DefaultListModel();
-        JList list = new JList(model);
+        //model = new DefaultListModel();
+        //JList list = new JList(model);
         
-        populando(emails, model, service);
+        tabela = new TableView();
         
-        listPane = new JScrollPane(list);
+        listPane = new JScrollPane(tabela.getTable());
         
         JButton btnAdd = new JButton("Salvar em Banco de Dados");
         btnAdd.addActionListener((ActionEvent e) -> {
