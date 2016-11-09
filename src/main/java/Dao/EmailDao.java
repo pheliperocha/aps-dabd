@@ -9,6 +9,8 @@ import Model.Email;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -27,10 +29,13 @@ public class EmailDao {
 
         PreparedStatement stmt = banco.prepareStatement("INSERT INTO tb_emails (email, assunto, mensagem, data) VALUES (?, ?, ?, ?)");
         
-        stmt.setString(0, "Teste1");
-        stmt.setString(1, "Teste2");
-        stmt.setString(2, "Teste3");
-        stmt.setString(3, "Teste4");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:ii:ss");
+        String d = df.format(e.getData());
+        
+        stmt.setString(1, e.getEmail());
+        stmt.setString(2, e.getAssunto());
+        stmt.setString(3, e.getMessagem());
+        stmt.setString(4, d);
         
         return stmt.execute();
     }
