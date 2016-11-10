@@ -17,9 +17,11 @@ public class Main {
         
         GmailController gmailController = new GmailController();
         
-        MainView view = new MainView();
+        MainController controller = new MainController(gmailController.getService(), gmailController.getEmails());
         
-        MainController controller = new MainController(gmailController.getService(), gmailController.getEmails(), view);
+        MainView view = new MainView(controller);
+        
+        controller.setView(view);
 
         controller.updateView();
 

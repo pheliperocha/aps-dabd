@@ -10,7 +10,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
@@ -25,17 +27,18 @@ public class EmailDao {
         banco = conn.connect();
     }
     
-    public boolean insert(Email e) throws SQLException {
+    public boolean insert(Email e) throws SQLException, ParseException {
 
         PreparedStatement stmt = banco.prepareStatement("INSERT INTO tb_emails (email, assunto, mensagem, data) VALUES (?, ?, ?, ?)");
         
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:ii:ss");
-        String d = df.format(e.getData());
-        
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        Date parsed = format.parse(e.getData());
+        java.sql.Date sqlDate = new java.sql.Date(parsed.getTime());
+
         stmt.setString(1, e.getEmail());
         stmt.setString(2, e.getAssunto());
         stmt.setString(3, e.getMessagem());
-        stmt.setString(4, d);
+        stmt.setDate(4, sqlDate);
         
         return stmt.execute();
     }
