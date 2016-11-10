@@ -6,43 +6,46 @@
 package View;
 
 import Model.Email;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
+import javax.swing.table.TableColumnModel;
 
 /**
  *
  * @author PhelipeRocha
  */
-public class TableView {
+public class TableView extends JTable {
     
-    private Object [][] dados = {};
-    private JTable tabela;
     private DefaultTableModel model;
 
     public TableView() {
+        super();
         model = new DefaultTableModel();
+        model.addColumn("gmail_id");
         model.addColumn("Email");
         model.addColumn("Assunto");
-        model.addColumn("Mensagem");
         model.addColumn("Data");
         
-        this.tabela = new JTable();
-        this.tabela.setModel(model);
+        this.setModel(model);
+        
+        TableColumnModel tcm = this.getColumnModel();
+        tcm.removeColumn(tcm.getColumn(0));
     }
     
     public JTable getTable() {
-        return this.tabela;
+        return this;
     }
     
     public void setObject(Email obj) {
         
-        Object[] row = { obj.getEmail(), obj.getAssunto(), obj.getMessagem(), obj.getData() };
-        DefaultTableModel model = (DefaultTableModel) this.tabela.getModel();
-        model.addRow(row);
+        Object[] row = { obj.getGmail_id(), obj.getAddress(), obj.getSubject(), obj.getDate() };
+        DefaultTableModel m = (DefaultTableModel) this.getModel();
+        m.addRow(row);
+        
     }
     
 }

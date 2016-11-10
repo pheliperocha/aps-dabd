@@ -21,8 +21,8 @@ public class ConFactory {
         
         servidor = "localhost";
         base = "aps-dabd";
-        login = "root";
-        senha = "";
+        login = "user";
+        senha = "d@5Rus*2Hast";
         
     }
     

@@ -22,6 +22,7 @@ import com.google.api.services.gmail.model.Message;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +31,7 @@ import java.util.List;
  *
  * @author PhelipeRocha
  */
-public class GmailController {
+public class ServiceController {
     /** Application name. */
     private static final String APPLICATION_NAME =
         "Gmail API Java Quickstart";
@@ -52,8 +53,8 @@ public class GmailController {
     // Print the labels in the user's account.
     private static String USER = "me";
     
-    private Gmail service;
-    private List<Message> emails;
+    private final Gmail service;
+    private final List<Message> emails;
 
     /** Global instance of the scopes required by this quickstart.
      *
@@ -67,8 +68,7 @@ public class GmailController {
         try {
             HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
             DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
-        } catch (Throwable t) {
-            t.printStackTrace();
+        } catch (GeneralSecurityException | IOException t) {
             System.exit(1);
         }
     }
@@ -97,7 +97,7 @@ public class GmailController {
     public static List<Message> listMessages(Gmail service, String userId) throws IOException {
         ListMessagesResponse response = service.users().messages().list(userId).execute();
         
-        List<Message> messages = new ArrayList<Message>();
+        List<Message> messages = new ArrayList<>();
         messages.addAll(response.getMessages());
 
         return messages;
@@ -111,7 +111,7 @@ public class GmailController {
     public static Credential authorize() throws IOException {
         // Load client secrets.
         InputStream in =
-            GmailController.class.getResourceAsStream("/client_secret.json");
+            ServiceController.class.getResourceAsStream("/client_secret.json");
         GoogleClientSecrets clientSecrets =
             GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
@@ -129,7 +129,7 @@ public class GmailController {
         return credential;
     }
 
-    public GmailController() throws IOException {
+    public ServiceController() throws IOException {
         
         // Build a new authorized API client service.
         service = getGmailService();

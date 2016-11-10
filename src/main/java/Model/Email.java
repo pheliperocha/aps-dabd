@@ -18,60 +18,73 @@ import javax.mail.internet.MimeMessage;
  */
 public class Email {
     
-    private String email;
-    private String assunto;
-    private String messagem;
-    private String data;
+    private String gmail_id;
+    private String address;
+    private String subject;
+    private String message;
+    private String date;
 
-    public Email(MimeMessage mime, String snippet) throws MessagingException {
+    public Email(String messageId, MimeMessage mime, String snippet) throws MessagingException {
         
-        String email = ((InternetAddress) mime.getFrom()[0]).getAddress();
+        String e = ((InternetAddress) mime.getFrom()[0]).getAddress();
         
-        this.email = email;
-        this.assunto = mime.getSubject();
-        this.messagem = snippet;
+        this.gmail_id = messageId;
+        this.address = e;
+        this.subject = mime.getSubject();
+        this.message = snippet;
         
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         String d = df.format(mime.getSentDate());
         
-        this.data = d;
+        this.date = d;
 
     }
-
-    public String getEmail() {
-        return email;
+    
+    public Email() {
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public String getGmail_id() {
+        return gmail_id;
     }
 
-    public String getAssunto() {
-        return assunto;
+    public void setGmail_id(String gmail_id) {
+        this.gmail_id = gmail_id;
     }
 
-    public void setAssunto(String assunto) {
-        this.assunto = assunto;
+    public String getAddress() {
+        return address;
     }
 
-    public String getMessagem() {
-        return messagem;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public void setMessagem(String messagem) {
-        this.messagem = messagem;
+    public String getSubject() {
+        return subject;
     }
 
-    public String getData() {
-        return data;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
-    public void setData(Date data) {
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
         
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        String d = df.format(data);
+        String d = df.format(date);
         
-        this.data = d;
+        this.date = d;
     }
     
 }

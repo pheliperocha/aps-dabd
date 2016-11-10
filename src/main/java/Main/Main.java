@@ -1,11 +1,9 @@
 package Main;
 
-import Controller.GmailController;
+import Controller.ServiceController;
 import Controller.MainController;
 import View.MainView;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import javax.mail.MessagingException;
 
 public class Main {    
@@ -15,7 +13,7 @@ public class Main {
      */
     public static void main(String[] args) throws IOException, MessagingException {
         
-        GmailController gmailController = new GmailController();
+        ServiceController gmailController = new ServiceController();
         
         MainController controller = new MainController(gmailController.getService(), gmailController.getEmails());
         

@@ -27,13 +27,13 @@ import javax.mail.internet.MimeMessage;
  */
 public class MainController {
     
-    private Gmail service;
-    private List<Message> messages;
+    public static Gmail service;
+    private final List<Message> messages;
     private MainView view;
 
     public MainController(Gmail service, List<Message> messages) {
         
-        this.service = service;
+        MainController.service = service;
         this.messages = messages;
         
     }
@@ -43,7 +43,7 @@ public class MainController {
     }
     
     public void updateView() throws IOException, MessagingException{
-        view.populate(this.service, this.messages);
+        view.populate(MainController.service, this.messages);
     }
     
     public void populateDB() throws IOException, MessagingException, ClassNotFoundException, SQLException, ParseException {
@@ -55,14 +55,14 @@ public class MainController {
             Message message = service.users().messages().get("me", messageId).setFormat("raw").execute();
 
             Base64 base64Url = new Base64(true);
-            byte[] emailBytes = base64Url.decodeBase64(message.getRaw());
+            byte[] emailBytes = Base64.decodeBase64(message.getRaw());
             
             Properties props = new Properties();
             Session session = Session.getDefaultInstance(props, null);
             
             MimeMessage mime = new MimeMessage(session, new ByteArrayInputStream(emailBytes));
             
-            Email obj = new Email(mime, message.getSnippet());
+            Email obj = new Email(messageId, mime, message.getSnippet());
             
             EmailDao emailDao = new EmailDao();
             emailDao.insert(obj);

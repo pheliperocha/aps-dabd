@@ -38,47 +38,22 @@ import javax.mail.internet.MimeMessage;
  *
  * @author PhelipeRocha
  */
-public class MainView {
+public class SavedView {
     
     private final JFrame frame;
     private final Container container;
     private final JScrollPane listPane;
     private final Container topPane;
-    private final TableView tabela;
-    private final MainController controller;
-    
-    public void populate(Gmail service, List<Message> messages) throws IOException, MessagingException {
-
-        for (int i = 0; i < 10; i++) {
-            
-            String messageId = messages.get(i).getId();
-            
-            Message message = service.users().messages().get("me", messageId).setFormat("raw").execute();
-
-            Base64 base64Url = new Base64(true);
-            byte[] emailBytes = base64Url.decodeBase64(message.getRaw());
-            
-            Properties props = new Properties();
-            Session session = Session.getDefaultInstance(props, null);
-            
-            MimeMessage mime = new MimeMessage(session, new ByteArrayInputStream(emailBytes));
-
-            Email obj = new Email(messageId, mime, message.getSnippet());
-            
-            this.tabela.setObject(obj);
-
-        }
-        
-    }
+    public TableView tabela;
+    private final SavedController controller;
  
-    public MainView(MainController controller) throws IOException {
+    public SavedView(SavedController controller) throws IOException {
         this.frame = new JFrame();
         this.topPane = new JPanel();
         this.container = frame.getContentPane();
         this.controller = controller;
         
-        frame.setTitle("Lista de Emails");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setTitle("Lista de Emails Salvas no Banco de Datos");
         
         container.setLayout(new BorderLayout(20,20));
         
@@ -86,33 +61,24 @@ public class MainView {
         
         listPane = new JScrollPane(tabela.getTable());
         
-        JButton btnSeeSaved = new JButton("Ver salvos Salvar");
-        btnSeeSaved.addActionListener((ActionEvent e) -> {
-            
-            try {
-                SavedController savedController = new SavedController();
-            } catch (IOException | ClassNotFoundException | SQLException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-        });
-        
         JButton btnOpen = new JButton("Abrir");
         btnOpen.addActionListener((ActionEvent e) -> {
             int row = tabela.getSelectedRow();
-            String gmail_id = tabela.getModel().getValueAt(row, 0).toString();
+            int id = Integer.parseInt(tabela.getModel().getValueAt(row, 0).toString());
             
             try {
-                ReadController readController = new ReadController(gmail_id);
-            } catch (IOException | MessagingException ex) {
+                ReadController readController = new ReadController();
+                readController.setEmailFromDB(id);
+            } catch (IOException ex) {
                 Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException | SQLException ex) {
+                Logger.getLogger(SavedView.class.getName()).log(Level.SEVERE, null, ex);
             }
             
         });
         
         topPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
         topPane.add(btnOpen);
-        topPane.add(btnSeeSaved);
         
         container.add(BorderLayout.NORTH, topPane);
         container.add(BorderLayout.CENTER, listPane);
