@@ -5,14 +5,6 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
       <group>
-        <file>file:/C:/Users/PhelipeRocha/APS-DABD/src/main/java/View/MainView.java</file>
-        <file>file:/C:/Users/PhelipeRocha/APS-DABD/src/main/java/Main/Main.java</file>
-        <file>file:/C:/Users/PhelipeRocha/APS-DABD/build.gradle</file>
-      </group>
-    </open-files>
-    <editor-bookmarks lastBookmarkId="0" xmlns="http://www.netbeans.org/ns/editor-bookmarks/2"/>
-    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-      <group>
         <file>file:/C:/Users/PhelipeRocha/APS-DABD/src/main/java/View/TableView.java</file>
         <file>file:/C:/Users/PhelipeRocha/APS-DABD/src/main/java/View/MainView.java</file>
         <file>file:/C:/Users/PhelipeRocha/APS-DABD/src/main/java/Model/Email.java</file>
@@ -20,5 +12,6 @@
         <file>file:/C:/Users/PhelipeRocha/APS-DABD/src/main/java/Controller/MainController.java</file>
       </group>
     </open-files>
+    <editor-bookmarks lastBookmarkId="0" xmlns="http://www.netbeans.org/ns/editor-bookmarks/2"/>
   </auxiliary>
 </gradle-project-properties>

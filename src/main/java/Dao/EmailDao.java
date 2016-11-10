@@ -1,11 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Dao;
 
-import Model.Email;
+import Modelo.Email;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -13,32 +8,36 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-/**
- *
- * @author PhelipeRocha
- */
 public class EmailDao {
     
     Connection banco;
     
-    public EmailDao() throws ClassNotFoundException, SQLException {
-        ConFactory conn = new ConFactory();
-        banco = conn.connect();
+    public EmailDao() {
+        try {
+            FabricaConexoes conn = new FabricaConexoes();
+            banco = conn.connect();
+        } catch (SQLException ex) {
+            Logger.getLogger(EmailDao.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(EmailDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
-    public boolean insert(Email e) throws SQLException, ParseException {
+    public boolean inserir(Email e) throws SQLException, ParseException {
 
-        PreparedStatement stmt = banco.prepareStatement("INSERT INTO tb_emails (email, assunto, mensagem, data) VALUES (?, ?, ?, ?)");
+        PreparedStatement stmt = banco.prepareStatement("INSERT INTO emails_tabela (email, assunto, mensagem, data) VALUES (?, ?, ?, ?)");
         
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
         Date parsed = format.parse(e.getData());
-        java.sql.Date sqlDate = new java.sql.Date(parsed.getTime());
+        java.sql.Date date = new java.sql.Date(parsed.getTime());
 
         stmt.setString(1, e.getEmail());
         stmt.setString(2, e.getAssunto());
         stmt.setString(3, e.getMessagem());
-        stmt.setDate(4, sqlDate);
+        stmt.setDate(4, date);
         
         return stmt.execute();
     }

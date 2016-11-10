@@ -1,26 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-/**
- *
- * @author PhelipeRocha
- */
-public class ConFactory {
+public class FabricaConexoes {
     
     private String servidor, base, login, senha;
 
-    public ConFactory() throws SQLException {
+    public FabricaConexoes() throws SQLException {
         
         servidor = "localhost";
-        base = "aps-dabd";
+        base = "emails_bd";
         login = "root";
         senha = "";
         

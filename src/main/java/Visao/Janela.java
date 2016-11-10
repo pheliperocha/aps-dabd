@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package View;
+package Visao;
 
-import Controller.MainController;
-import Model.Email;
+import Controladores.ControladorPrincipal;
+import Modelo.Email;
 import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
@@ -32,67 +27,63 @@ import javax.swing.JScrollPane;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 
-/**
- *
- * @author PhelipeRocha
- */
-public class MainView {
+public class Janela {
     
     private JFrame frame;
     private final Container container;
     private final JScrollPane listPane;
     private final Container topPane;
-    private final TableView tabela;
-    private final MainController controller;
+    private final Tabela tabela;
+    private final ControladorPrincipal controller;
     
-    public void populate(Gmail service, List<Message> messages) throws IOException, MessagingException {
+    public void preencherTabela(Gmail service, List<Message> messages) {
 
         for (int i = 0; i < 10; i++) {
             
-            String messageId = messages.get(i).getId();
-            
-            Message message = service.users().messages().get("me", messageId).setFormat("raw").execute();
-
-            Base64 base64Url = new Base64(true);
-            byte[] emailBytes = base64Url.decodeBase64(message.getRaw());
-            
-            Properties props = new Properties();
-            Session session = Session.getDefaultInstance(props, null);
-            
-            MimeMessage mime = new MimeMessage(session, new ByteArrayInputStream(emailBytes));
-            
-            Email obj = new Email(mime, message.getSnippet());
-            
-            this.tabela.setObject(obj);
+            try {
+                String messageId = messages.get(i).getId();
+                
+                Message message = service.users().messages().get("me", messageId).setFormat("raw").execute();
+                
+                Base64 base64Url = new Base64(true);
+                byte[] emailBytes = base64Url.decodeBase64(message.getRaw());
+                
+                Properties props = new Properties();
+                Session session = Session.getDefaultInstance(props, null);
+                
+                MimeMessage mime = new MimeMessage(session, new ByteArrayInputStream(emailBytes));
+                
+                Email obj = new Email(mime, message.getSnippet());
+                
+                this.tabela.setObject(obj);
+            } catch (MessagingException ex) {
+                Logger.getLogger(Janela.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Janela.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
         }
         
     }
  
-    public MainView(MainController controller) throws IOException {
+    public Janela(ControladorPrincipal controller) throws IOException {
         this.frame = new JFrame();
         this.topPane = new JPanel();
         this.container = frame.getContentPane();
         this.controller = controller;
         
-        frame.setTitle("Lista de Emails");
+        frame.setTitle("Emails");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         container.setLayout(new BorderLayout(20,20));
         
-        tabela = new TableView();
+        tabela = new Tabela();
         
         listPane = new JScrollPane(tabela.getTable());
         
         JButton btnAdd = new JButton("Salvar em Banco de Dados");
         btnAdd.addActionListener((ActionEvent e) -> {
-            
-            try {
-                controller.populateDB();
-            } catch (IOException | MessagingException | ClassNotFoundException | SQLException | ParseException ex) {
-                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
+            controller.salvarNoBanco();
         });
         
         topPane.setLayout(new FlowLayout(FlowLayout.RIGHT));

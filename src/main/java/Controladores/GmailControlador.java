@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package Controller;
+package Controladores;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -25,41 +20,28 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-/**
- *
- * @author PhelipeRocha
- */
-public class GmailController {
-    /** Application name. */
+public class GmailControlador {
     private static final String APPLICATION_NAME =
         "Gmail API Java Quickstart";
     
-    /** Directory to store user credentials for this application. */
     private static final java.io.File DATA_STORE_DIR = new java.io.File(
         System.getProperty("user.home"), ".credentials/gmail-java-quickstart");
     
-    /** Global instance of the {@link FileDataStoreFactory}. */
     private static FileDataStoreFactory DATA_STORE_FACTORY;
     
-    /** Global instance of the JSON factory. */
     private static final JsonFactory JSON_FACTORY =
         JacksonFactory.getDefaultInstance();
 
-    /** Global instance of the HTTP transport. */
     private static HttpTransport HTTP_TRANSPORT;
     
-    // Print the labels in the user's account.
     private static String USER = "me";
     
     private Gmail service;
     private List<Message> emails;
 
-    /** Global instance of the scopes required by this quickstart.
-     *
-     * If modifying these scopes, delete your previously saved credentials
-     * at ~/.credentials/gmail-java-quickstart
-     */
     private static final List<String> SCOPES =
         Arrays.asList(GmailScopes.GMAIL_READONLY);
 
@@ -73,11 +55,6 @@ public class GmailController {
         }
     }
     
-    /**
-     * Build and return an authorized Gmail client service.
-     * @return an authorized Gmail client service
-     * @throws IOException
-     */
     public static Gmail getGmailService() throws IOException {
         Credential credential = authorize();
         return new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
@@ -85,15 +62,6 @@ public class GmailController {
                 .build();
     }
     
-    /**
-     * List all Messages of the user's mailbox with labelIds applied.
-     *
-     * @param service Authorized Gmail API instance.
-     * @param userId User's email address. The special value "me"
-     * can be used to indicate the authenticated user.
-     * @param labelIds Only return Messages with these labelIds applied.
-     * @throws IOException
-     */
     public static List<Message> listMessages(Gmail service, String userId) throws IOException {
         ListMessagesResponse response = service.users().messages().list(userId).execute();
         
@@ -103,19 +71,12 @@ public class GmailController {
         return messages;
     }
     
-    /**
-     * Creates an authorized Credential object.
-     * @return an authorized Credential object.
-     * @throws IOException
-     */
     public static Credential authorize() throws IOException {
-        // Load client secrets.
         InputStream in =
-            GmailController.class.getResourceAsStream("/client_secret.json");
+            GmailControlador.class.getResourceAsStream("/client_secret.json");
         GoogleClientSecrets clientSecrets =
             GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
-        // Build flow and trigger user authorization request.
         GoogleAuthorizationCodeFlow flow =
                 new GoogleAuthorizationCodeFlow.Builder(
                         HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
@@ -129,11 +90,14 @@ public class GmailController {
         return credential;
     }
 
-    public GmailController() throws IOException {
+    public GmailControlador() {
         
-        // Build a new authorized API client service.
-        service = getGmailService();
-        emails = listMessages(service, USER);
+        try {
+            service = getGmailService();
+            emails = listMessages(service, USER);
+        } catch (IOException ex) {
+            Logger.getLogger(GmailControlador.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
     }
 

@@ -1,21 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package Model;
+package Modelo;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-/**
- *
- * @author PhelipeRocha
- */
 public class Email {
     
     private String email;
@@ -23,18 +16,22 @@ public class Email {
     private String messagem;
     private String data;
 
-    public Email(MimeMessage mime, String snippet) throws MessagingException {
+    public Email(MimeMessage mime, String snippet) {
         
-        String email = ((InternetAddress) mime.getFrom()[0]).getAddress();
-        
-        this.email = email;
-        this.assunto = mime.getSubject();
-        this.messagem = snippet;
-        
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        String d = df.format(mime.getSentDate());
-        
-        this.data = d;
+        try {
+            String email = ((InternetAddress) mime.getFrom()[0]).getAddress();
+            
+            this.email = email;
+            this.assunto = mime.getSubject();
+            this.messagem = snippet;
+            
+            DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            String d = df.format(mime.getSentDate());
+            
+            this.data = d;
+        } catch (MessagingException ex) {
+            Logger.getLogger(Email.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 

@@ -1,11 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package View;
+package Visao;
 
-import Model.Email;
+import Modelo.Email;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,17 +8,13 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
-/**
- *
- * @author PhelipeRocha
- */
-public class TableView {
+public class Tabela {
     
     private Object [][] dados = {};
     private JTable tabela;
     private DefaultTableModel model;
 
-    public TableView() {
+    public Tabela() {
         model = new DefaultTableModel();
         model.addColumn("Email");
         model.addColumn("Assunto");
